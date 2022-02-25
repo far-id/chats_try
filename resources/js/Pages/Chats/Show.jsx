@@ -1,22 +1,38 @@
 import Avatar from '@/Components/Avatar';
 import App from '@/Layouts/App';
+import { Inertia } from '@inertiajs/inertia';
 import { useForm, usePage } from '@inertiajs/inertia-react';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function Show({ user, messages }) {
     const { auth } = usePage().props;
+    const scrollRef = useRef(null);
     const { data, setData, post, reset } = useForm({
         message: ''
     });
     
     const submitHandelr = (e) =>{
         e.preventDefault();
-        data.message == '' ? '' : post(route('chats.send', user.username), {
-            onSuccess: () => {
-                reset('message');
-            }
-        });
+        data.message == '' ? '' : Inertia.visit(`/chats/${user.username}`, {
+            method: 'POST',
+            data: {
+                message: data.message
+            },
+            preserveState: true,
+            preserveScroll: true,
+            headers: {
+                'X-Socket-Id': window.Echo.socketId()
+            },
+            onSuccess: page => {
+                reset('message'),
+                scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+            },
+        })
+        
     }
+    Echo.channel('chats').listen('MessageSent', ({ chat }) => {
+        Inertia.reload({ preserveScroll: true });
+    })
 
     const chatClass = (x, y, option = 'justify') => {
         if(option == 'justify'){
@@ -26,6 +42,10 @@ export default function Show({ user, messages }) {
             return x === y ? 'bg-[#005c4b]' : 'bg-[#202c33]';
         }
     }
+
+    useEffect(() => {
+        scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+    }, [])
     return (
         <div>
             <div className="flex flex-col h-screen">
@@ -33,10 +53,10 @@ export default function Show({ user, messages }) {
                     <Avatar src={user.avatar} />
                     {user.name}
                 </h1>
-                <div className="flex-1 overflow-y-auto px-4 py-2">
+                <div className="flex-1 overflow-y-auto px-4 py-2" ref={scrollRef}>
                     {messages.map(message => (
-                        <div className={` flex mb-2 ${chatClass(auth.user.id, message.sender_id)}`}>
-                            <div key={message.id} className={`md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl sm:max-w-sm rounded py-2 px-3 ${chatClass(auth.user.id, message.sender_id, 'background')}`}>
+                        <div key={message.id} className={` flex mb-2 ${chatClass(auth.user.id, message.sender_id)}`}>
+                            <div className={`md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl sm:max-w-sm rounded py-2 px-3 ${chatClass(auth.user.id, message.sender_id, 'background')}`}>
                                 <p className="text-sm text-gray-100 after:mr-14">{message.message}</p>
                                 <p className="text-right text-xs text-gray-300/90 -mt-3">
                                     {message.send_at}

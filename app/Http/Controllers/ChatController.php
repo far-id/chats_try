@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Http\Resources\ChatResource;
 use App\Http\Resources\UserResource;
 use App\Models\Chat;
@@ -37,6 +38,8 @@ class ChatController extends Controller
             'message' => request('message'),
             'receiver_id' => $user->id,
         ]);
+
+        broadcast(new MessageSent($chat))->toOthers();
 
         return back();
     }
