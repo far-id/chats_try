@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Farid Rizky Wijaya',
                 'username' => 'far',
                 'email' => 'far@far.test',
-                'password' => 'password'
+                'password' => bcrypt('password')
             ],
             [
                 'name' => 'Iqbal Rizky Wijaya',
                 'username' => 'iqbal',
                 'email' => 'iq@iq.test',
-                'password' => 'password'
+                'password' => bcrypt('password')
             ]
         ])->each(fn($user) => User::create($user));
         User::factory(10)->create();

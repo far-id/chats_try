@@ -50,6 +50,12 @@ class User extends Authenticatable
 
     public function chats()
     {
-        return $this->hasMany(Chat::class. 'sender_id');
+        return $this->hasMany(Chat::class, 'sender_id');
     }
+
+    public function picture($size = 150)
+    {
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?s=" . $size;
+    }
+
 }
