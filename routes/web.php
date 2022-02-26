@@ -40,7 +40,5 @@ Route::controller(ChatController::class)->middleware('auth')->group(function () 
 Route::get('/whatsapp', function() {
     return Inertia::render('Whatsapp');
 });
-Route::get('call', function() {
-    MessageSent::dispatch('Hello');
-});
+
 require __DIR__.'/auth.php';
