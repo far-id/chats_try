@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Resources\UserResource;
+use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -39,7 +40,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => fn () => auth()->check() ? new UserResource(auth()->user()) : '',
             ],
-            'users' => fn () => auth()->check() ? UserResource::collection(User::where('id', '!=', $request->user()->id)->get()) : '', // menggunakan function agar tidak diload ulang ketika pindah halaman tapi kayanya ga ngaruh
+            'users' => fn () => auth()->check() ? Chat::with('userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())->get(): '', // menggunakan function agar tidak diload ulang ketika pindah halaman tapi kayanya ga ngaruh
         ]);
     }
 }

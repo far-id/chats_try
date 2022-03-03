@@ -19,10 +19,12 @@ class MessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public $chat;
-    public function __construct($chat)
+    public $message;
+    public $receiver_id;
+    public function __construct($message, $receiver_id)
     {
-        $this->chat = $chat;
+        $this->message = $message;
+        $this->receiver_id = $receiver_id;
         $this->dontBroadcastToCurrentUser();
     }
 
@@ -33,6 +35,6 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('chats.' . $this->chat->receiver->uuid);
+        return new PrivateChannel('chats.' . $this->receiver_id);
     }
 }

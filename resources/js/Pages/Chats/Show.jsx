@@ -4,20 +4,22 @@ import { Inertia } from '@inertiajs/inertia';
 import { useForm, usePage } from '@inertiajs/inertia-react';
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function Show({ user, messages }) {
+export default function Show({ partner, messages }) {
     const { auth } = usePage().props;
     const scrollRef = useRef(null);
     const [ typing, setTyping ] = useState(false)
-    const { data, setData, post, reset } = useForm({
+    const { data, setData, reset } = useForm({
         message: ''
     });
-    
+
+    // sent message to controller
     const submitHandelr = (e) =>{
         e.preventDefault();
-        data.message == '' ? '' : Inertia.visit(`/chats/${user.username}`, {
+        data.message == '' ? '' : Inertia.visit(`/chats/${partner.username}`, {
             method: 'POST',
             data: {
-                message: data.message
+                message: data.message,
+                chat_id: messages[0].id,
             },
             headers: {
                 'X-Socket-Id': window.Echo.socketId()
@@ -30,6 +32,7 @@ export default function Show({ user, messages }) {
         
     }
 
+    // listen if have the new message
     Echo.private(`chats.${auth.user.uuid}`)
         .listenForWhisper('isTyping', (e) => {
             setTyping(true);
@@ -61,21 +64,8 @@ export default function Show({ user, messages }) {
     }
 
     const onTyping = () => {
-        Echo.private(`chats.${user.uuid}`)
+        Echo.private(`chats.${partner.uuid}`)
             .whisper('isTyping', {user:auth.user.name})
-        // Echo.private(`chats.${auth.user.uuid}`)
-        //     .listenForWhisper('isTyping', (e)=>{
-        //         setTyping(true)
-        //         clearTimeout(window.timeOut);
-        //         window.timeOut = setTimeout(() => {
-        //             setTyping(false)
-        //         });
-        //     })
-        // setTyping(true);
-        // clearTimeout(window.timeOut)
-        // window.timeOut = setTimeout(() => {
-        //     setTyping(false);
-        // }, 4000);
     };
 
     useEffect(() => {
@@ -85,19 +75,19 @@ export default function Show({ user, messages }) {
         <div>
             <div className="flex flex-col h-screen">
                 <h1 className='bg-[#202c33] text-white px-6 py-4 gap-x-4 font-semibold flex items-center'>
-                    <Avatar src={user.avatar} />
+                    <Avatar src={partner.avatar} />
                     <div>
-                        {user.name}
+                        {partner.name}
                         {typing && <span className="block text-xs text-gray-500">Mengetik . . .</span>}
                     </div>
                 </h1>
                 <div className="flex-1 px-4 py-2 overflow-y-auto" scroll-region={'true'}>
-                    {messages.map(message => (
+                    {messages[0].messages.map(message => (
                         <div key={message.id} className={` flex mb-2 ${chatClass(auth.user.id, message.sender_id)}`}>
                             <div className={`md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl sm:max-w-sm rounded py-2 px-3 ${chatClass(auth.user.id, message.sender_id, 'background')}`}>
                                 <p className="text-sm text-gray-100 after:mr-14">{message.message}</p>
                                 <p className="-mt-3 text-xs text-right text-gray-300/90">
-                                    {message.send_at}
+                                    {message.sent_at}
                                 </p>
                             </div>
                         </div>

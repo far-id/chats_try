@@ -2,12 +2,20 @@ import Avatar from '@/Components/Avatar';
 import { Link, usePage } from '@inertiajs/inertia-react';
 import React from 'react';
 
+const me = (user, auth) => {
+    if (user.user_one.id == auth.user.id){
+        return user.user_two;
+    }else if(user.user_two.id == auth.user.id){
+        return user.user_one;
+    }
+}
+
 export default function App(props) {
     const { users, auth } = usePage().props;
     return (
         <div className="flex min-h-screen">
             <div className="w-1/4">
-                <div className="w-1/4 flex flex-col text-right fixed h-full border-r">
+                <div className="fixed flex flex-col w-1/4 h-full text-right border-r">
                     <div className="bg-[#202c33] flex justify-between px-5 py-4">
                         <Avatar src={auth.user && auth.user.avatar}/>
                         <div className="flex items-center gap-x-3">
@@ -30,9 +38,10 @@ export default function App(props) {
                     <div className="flex-1 overflow-y-auto">
                         {users.map(user => (
                             <div key={user.id} className="p-2">
-                                <Link href={route('chats.show', user.username)} className={`block ${route().current('chats.show', user.username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
-                                    {user.name}
+                                <Link href={route('chats.show', me(user, auth).username)} className={`block ${route().current('chats.show', me(user, auth).username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
+                                    {me(user, auth).name}
                                 </Link>
+                                <span>{user.preview}</span>
                             </div>
                         ))}
                     </div>

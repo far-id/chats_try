@@ -50,7 +50,12 @@ class User extends Authenticatable
 
     public function chats()
     {
-        return $this->hasMany(Chat::class, 'sender_id');
+        return $this->hasMany(Chat::class, 'from_id');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Messages::class, 'sender_id');
     }
 
     public function picture($size = 150)

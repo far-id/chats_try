@@ -2,6 +2,7 @@
 
 use App\Events\MessageSent;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TestController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -40,5 +41,7 @@ Route::controller(ChatController::class)->middleware('auth')->group(function () 
 Route::get('/whatsapp', function() {
     return Inertia::render('Whatsapp');
 });
+
+Route::get('test', TestController::class);
 
 require __DIR__.'/auth.php';

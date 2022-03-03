@@ -8,15 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class Chat extends Model
 {
     use HasFactory;
-    protected $fillable = ['sender_id', 'receiver_id', 'message'];
+    protected $fillable = ['sender_id', 'receiver_id'];
+    protected $guarded = ['id'];
+    // protected $with = ['user1', 'user2'];
+    protected $appends = ['preview'];
 
-    public function sender()
+
+    public function userOne()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class, 'user_1');
     }
 
-    public function receiver()
+    public function userTwo()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(User::class, 'user_2');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function getPreviewAttribute()
+    {
+        return $this->messages()->latest()->first()->message ?? [];
     }
 }
