@@ -17,6 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_1')->constrained('users');
             $table->foreignId('user_2')->constrained('users');
+            // $table->integer('unread_messages_user_1')->default(0);
+            // $table->integer('unread_messages_user_2')->default(0);
+            // $table->integer('latest_message_at')->nullable();
             $table->timestamps();
         });
     }

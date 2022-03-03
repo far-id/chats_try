@@ -11,7 +11,7 @@ class Message extends Model
     use HasFactory;
     protected $fillable = ['sender_id', 'chat_id', 'message'];
     protected $guarded = ['id'];
-    protected $appends = ['sent_at'];
+    protected $appends = ['sent_at', 'sent_at_raw'];
 
     public function chat()
     {
@@ -26,5 +26,10 @@ class Message extends Model
     public function getSentAtAttribute()
     {
         return $this->created_at->format('H.i');
+    }
+
+    public function getSentAtRawAttribute()
+    {
+        return $this->created_at->timestamp;
     }
 }
