@@ -34,7 +34,7 @@ export default function Show({ partner, messages }) {
 
     // listen if have the new message
     Echo.private(`chats.${auth.user.uuid}`)
-        .listenForWhisper('isTyping', (e) => {
+        .listenForWhisper(`isTyping${partner.uuid}`, (e) => {
             setTyping(true);
             clearTimeout(window.timeOut);
             window.timeOut = setTimeout(() => {
@@ -65,7 +65,7 @@ export default function Show({ partner, messages }) {
 
     const onTyping = () => {
         Echo.private(`chats.${partner.uuid}`)
-            .whisper('isTyping', {user:auth.user.name})
+            .whisper(`isTyping${auth.user.uuid}`, {user:auth.user.name})
     };
 
     useEffect(() => {
