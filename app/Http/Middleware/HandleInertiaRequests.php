@@ -40,7 +40,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => fn () => auth()->check() ? new UserResource(auth()->user()) : '',
             ],
-            'users' => fn () => auth()->check() ? 
+            'users' => fn() => auth()->check() ? UserResource::collection(User::where('id', '!=', auth()->id())->get()) : [],
+            'chats' => fn () => auth()->check() ? 
                 Chat::with('latest_message', 'userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())
                     ->orderByLastMessage('desc')
                     ->get()

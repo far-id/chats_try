@@ -17,8 +17,8 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chat_id')->constrained('users');
-            $table->foreignId('sender_id')->constrained('chats');
+            $table->foreignId('chat_id')->constrained('chats');
+            $table->foreignId('sender_id')->constrained('users');
             $table->text('message');
             $table->timestamps();
         });

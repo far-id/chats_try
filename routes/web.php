@@ -36,6 +36,7 @@ Route::controller(ChatController::class)->middleware('auth')->group(function () 
     Route::get('chats', 'index')->name('chats');
     Route::get('chats/{user:username}', 'show')->name('chats.show');
     Route::post('chats/{user:username}', 'send')->name('chats.send');
+    Route::post('chats/{user:username}/new', 'new')->name('chats.new');
 });
 
 Route::get('/whatsapp', function() {

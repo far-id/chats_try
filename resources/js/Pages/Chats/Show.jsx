@@ -73,15 +73,15 @@ export default function Show({ partner, messages }) {
     }, [])
     return (
         <div>
-            <div className="flex flex-col h-screen">
-                <h1 className='bg-[#202c33] text-white px-6 py-4 gap-x-4 font-semibold flex items-center'>
+            <div className="flex flex-col h-screen" >
+                <h1 className='bg-[#202c33] text-white px-6 py-5 gap-x-4 font-semibold flex items-center'>
                     <Avatar src={partner.avatar} />
                     <div>
                         {partner.name}
                         {typing && <span className="block text-xs text-gray-500">Mengetik . . .</span>}
                     </div>
                 </h1>
-                <div className="flex-1 px-4 py-2 overflow-y-auto" scroll-region={'true'}>
+                <div className="flex-1 px-4 py-2 overflow-y-auto bg-fixed" scroll-region={'true'} style={{ backgroundImage: `url("https://web.whatsapp.com/img/bg-chat-tile-dark_a4be512e7195b6b733d9110b408f075d.png")` }}>
                     {messages[0].messages.map(message => (
                         <div key={message.id} className={` flex mb-2 ${chatClass(auth.user.id, message.sender_id)}`}>
                             <div className={`md:max-w-lg lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl sm:max-w-sm rounded py-2 px-3 ${chatClass(auth.user.id, message.sender_id, 'background')}`}>

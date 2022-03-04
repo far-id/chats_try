@@ -20,12 +20,13 @@ class ChatController extends Controller
 
     public function show(User $user)
     {
-        $messages =
-        Chat::with('userOne', 'userTwo', 'messages')->where(function ($q) use ($user) {
-            $q->where('user_1', auth()->id())->where('user_2', $user->id);
-        })->orWhere(function ($q) use ($user) {
-            $q->where('user_1', $user->id)->where('user_2', auth()->id());
-        })->get();
+        abort_if(Chat::where('user_1', auth()->id())->where('user_2', $user->id)->orWhere('user_2', auth()->id())->where('user_1', $user->id)->count() == 0, 404);
+    
+        $messages = Chat::with('userOne', 'userTwo', 'messages')->where(function ($q) use ($user) {
+                        $q->where('user_1', auth()->id())->where('user_2', $user->id);
+                    })->orWhere(function ($q) use ($user) {
+                        $q->where('user_1', $user->id)->where('user_2', auth()->id());
+                    })->get();
         return inertia('Chats/Show', [
             'messages' => $messages,
             'partner' => new UserResource($user),
@@ -48,18 +49,16 @@ class ChatController extends Controller
         return back();
     }
 
-    // public function send(Request $request, User $user)
-    // {
-    //     $request->validate([
-    //         'message' => 'required',
-    //     ]);
-    //     $chat = auth()->user()->chats()->create([
-    //         'message' => request('message'),
-    //         'receiver_id' => $user->id,
-    //     ]);
-
-    //     broadcast(new MessageSent($chat->load('receiver')))->toOthers();
-
-    //     return back();
-    // }
+    public function new(User $user)
+    {
+        $chat = Chat::where(function($q) use ($user) {
+                    $q->where('user_1', auth()->id())->where('user_2', $user->id);
+                })->orWhere(function($q) use ($user) {
+                    $q->where('user_1', $user->id)->where('user_2', auth()->id());
+                })->firstOrCreate(
+                    ['user_1' => auth()->id()],
+                    ['user_2' => $user->id]
+                );
+        return to_route('chats.show', $user->username);
+    }
 }
