@@ -20,7 +20,7 @@ mix.js('resources/js/app.js', 'public/js')
     ])
     .webpackConfig(require('./webpack.config'));
 mix.browserSync({
-    proxy: 'http://localhost:8000/',
+    proxy: 'https://chatsfar1.herokuapp.com/',
     open: false,
 });
 if (mix.inProduction()) {
