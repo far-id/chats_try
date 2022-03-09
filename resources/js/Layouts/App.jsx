@@ -1,7 +1,16 @@
 import Avatar from '@/Components/Avatar';
 import { Link, usePage } from '@inertiajs/inertia-react';
 import React, { Fragment, useState } from 'react';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, Transition, Tab } from '@headlessui/react';
+
+const me = (user, auth) => {
+    console.log('user', user);
+    if (user.user_1 == auth.user.id) {
+        return user.user_two;
+    } else if (user.user_2 == auth.user.id) {
+        return user.user_one;
+    }
+};
 
 function Dropdown() {
     return (
@@ -50,19 +59,85 @@ function Dropdown() {
     );
 }
 
-
-const me = (user, auth) => {
-    if (user.user_one.id == auth.user.id){
-        return user.user_two;
-    }else if(user.user_two.id == auth.user.id){
-        return user.user_one;
-    }
+function classNames(...classes) {
+    return classes.filter(Boolean).join(' ');
 }
+
+function Tabs({ auth }) {
+    const { chats, groups } = auth;
+    let [tabsLabel] = useState({
+        chats,
+        // groups,
+        // Recent: [
+        //     {
+        //         id: 1,
+        //         title: 'Does drinking coffee make you smarter?',
+        //         date: '5h ago',
+        //         commentCount: 5,
+        //         shareCount: 2,
+        //     },
+        //     {
+        //         id: 2,
+        //         title: "So you've bought coffee... now what?",
+        //         date: '2h ago',
+        //         commentCount: 3,
+        //         shareCount: 2,
+        //     },
+        // ]
+    });
+
+
+    return (
+        <div className="w-full max-w-md px-4` sm:px-0">
+            <Tab.Group>
+                <Tab.List className="flex p-1 space-x-1 bg-blue-900/20 rounded-xl">
+                    {Object.keys(tabsLabel).map((category) => (
+                        <Tab
+                            key={category}
+                            className={({ selected }) =>
+                                classNames(
+                                    'w-full py-2.5 text-sm leading-5 font-medium text-blue-700 rounded-lg',
+                                    'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60',
+                                    selected
+                                        ? 'bg-white shadow'
+                                        : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
+                                )
+                            }
+                        >
+                            {category}
+                        </Tab>
+                    ))}
+                </Tab.List>
+                <Tab.Panels className="mt-2">
+                    {Object.values(tabsLabel).map((chats, idx) => (
+                        <Tab.Panel
+                            key={idx}
+                            className={classNames(
+                                'bg-white rounded-xl p-3',
+                                'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60'
+                            )}
+                        >
+                                {chats.map((chat) => (
+                                        <div key={chat.id} className="p-2 bg-white border-b hover:bg-gray-200">
+                                            <Link href={route('chats.show', me(chat, auth).username)}>
+                                                <span className={` ${route().current('chats.show', me(chat, auth).username) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{me(chat, auth).name}</span>
+                                                <span className={`block ${route().current('chats.show', me(chat, auth).username) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.latest_message ? chat.latest_message.message.length > 35 ? chat.latest_message.message.substring(0, 35) + '...' : chat.latest_message.message : 'Start chat'}</span>
+                                            </Link>
+                                        </div>
+                                ))}
+                        </Tab.Panel>
+                    ))}
+                </Tab.Panels>
+            </Tab.Group>
+        </div>
+    );
+}
+
+
 
 export default function App(props) {
     const [showNewChat, setShowNewChat] = useState(false)
-    const { users, chats, auth } = usePage().props;
-    console.log(users);
+    const { auth } = usePage().props;
     return (
         <div className="flex min-h-screen">
             <div className="w-1/4">
@@ -82,14 +157,15 @@ export default function App(props) {
                             <Dropdown />
                         </div>
                     </div>
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto bg-gradient-to-r from-cyan-500 to-blue-500">
+                        
                         {showNewChat ? 
                             <>
                                 <div className="grid">
                                     <h3 className="text-xl font-semibold text-black justify-self-center font">New Chats</h3>
                                 </div>
                                 {
-                                    users.map(user => (
+                                    auth.users ? auth.users.map(user => (
                                         <div key={user.id} className="p-2 bg-white border-b hover:bg-gray-200">
                                             <Link href={route('chats.new', user.username)} method="POST" as="button"
                                                 className={`block text-left w-full focus:outline-none ${route().current('chats.show', user.username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
@@ -98,23 +174,11 @@ export default function App(props) {
                                             </Link>
                                         </div>
                                     ))
+                                    : ''
                                 }
                             </>
                         :
-                            
-                            <>
-                                {
-                                    chats.map(chat => (
-                                        <div key={chat.id} className="p-2 bg-white border-b hover:bg-gray-200">
-                                            <Link href={route('chats.show', me(chat, auth).username)}
-                                                className={`block ${route().current('chats.show', me(chat, auth).username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
-                                                {me(chat, auth).name}
-                                                <span className='block'>{chat.latest_message ? chat.latest_message.message : 'Start chat'}</span>
-                                            </Link>
-                                        </div>
-                                    ))
-                                }
-                            </>
+                            <Tabs auth={auth} />
                         }
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Chat;
+use App\Models\Group\Group;
 use App\Models\User;
 use App\Models\Message;
 use Illuminate\Database\Seeder;
@@ -26,6 +27,9 @@ class DatabaseSeeder extends Seeder
             ]
         ])->each(fn($user) => User::create($user));
         User::factory(10)->create();
-        $this->call(ChatSeeder::class);
+        $this->call([
+            ChatSeeder::class,
+            GroupSeeder::class,
+        ]);
     }
 }

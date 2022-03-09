@@ -16,19 +16,20 @@ class Chat extends Model
     {
         return $this->hasMany(Message::class);
     }
-
+    
+    // get 1 latest message
     public function latest_message()
     {
         return $this->hasOne(Message::class)->latestOfMany();
     }
 
-    public function scopeOrderByLastMessage($q, $order)
+    public function scopeOrderByLastMessage($q,)
     {
         return $q->orderBy(Message::select('created_at')
                 ->whereColumn('chat_id', 'chats.id')
                 ->latest()
                 ->take(1)
-        , $order);
+        , 'desc');
     }
 
     // public function getPreviewAttribute()

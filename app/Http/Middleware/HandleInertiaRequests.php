@@ -37,15 +37,23 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         return array_merge(parent::share($request), [
-            'auth' => [
-                'user' => fn () => auth()->check() ? new UserResource(auth()->user()) : '',
-            ],
-            'users' => fn() => auth()->check() ? UserResource::collection(User::where('id', '!=', auth()->id())->get()) : [],
-            'chats' => fn () => auth()->check() ? 
-                Chat::with('latest_message', 'userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())
-                    ->orderByLastMessage('desc')
-                    ->get()
-            : '', // menggunakan function agar tidak diload ulang ketika pindah halaman tapi kayanya ga ngaruh
+            'auth' => fn() => auth()->check() ? [
+                'user' => new UserResource(auth()->user()),
+                'users' => UserResource::collection(User::where('id', '!=', auth()->id())->get()),
+                'chats' =>  Chat::with('latest_message', 'userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())
+                            ->orderByLastMessage('desc')
+                            ->get(),
+                'groups' => User::with('groups')
+                            ->where('id', auth()->id())
+                            ->get()
+            ]: '',
+            
+            // 'users' => fn() => auth()->check() ? UserResource::collection(User::where('id', '!=', auth()->id())->get()) : [],
+            // 'chats' => fn () => auth()->check() ? 
+            //     Chat::with('latest_message', 'userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())
+            //         ->orderByLastMessage('desc')
+            //         ->get()
+            // : '', // menggunakan function agar tidak diload ulang ketika pindah halaman tapi kayanya ga ngaruh
         ]);
     }
 }
