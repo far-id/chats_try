@@ -67,14 +67,14 @@ function Tabs({ auth }) {
     const { chats, groups } = auth;
     let [tabsLabel] = useState({
         chats,
-        // groups,
+        groups,
         // Recent: [
         //     {
         //         id: 1,
         //         title: 'Does drinking coffee make you smarter?',
         //         date: '5h ago',
         //         commentCount: 5,
-        //         shareCount: 2,
+        //         shareCount: 2, 
         //     },
         //     {
         //         id: 2,
@@ -179,6 +179,20 @@ export default function App(props) {
                             </>
                         :
                             <Tabs auth={auth} />
+                            // <>
+                            //     {
+                            //         auth.groups ? auth.groups.map(group => (
+                            //             <div key={group.id} className="p-2 bg-white border-b hover:bg-gray-200">
+                            //                 <Link href={route('chats.new', user.username)} method="POST" as="button"
+                            //                     className={`block text-left w-full focus:outline-none ${route().current('chats.show', user.username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
+                            //                     {user.name}
+                            //                     <span className='block'>{user.email}</span>
+                            //                 </Link>
+                            //             </div>
+                            //         ))
+                            //         : ''
+                            //     }
+                            // </>
                         }
                     </div>
                 </div>

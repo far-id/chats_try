@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\GroupResource;
 use App\Models\Chat;
-use App\Models\Group\Group;
+use App\Models\Group;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,16 +19,20 @@ class TestController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $chat = Chat::with('latest_message', 'userOne', 'userTwo')->where('user_1', auth()->id())->orWhere('user_2', auth()->id())
-            ->orderByLastMessage('desc')
-            ->get();
-        // $group = Group::with('users', 'latest_message')
-        //         // ->where('user_id', auth()->id())
-        //         ->orderByLastMessage()
+        // $groups = User::with('groups')
+        //         ->where('id', auth()->id())
         //         ->get();
-        $groups = User::with('groups')
-                ->where('id', auth()->id())
-                ->get();
+
+        $chats = Chat::where('user_1', auth()->id())->orWhere('user_2', auth()->id())
+                    ->orderByLastMessage()
+                    ->get();
+
+        $groups = Group::with('last_message', 'users', 'messages')
+                    ->whereRelation('users', 'users.id', auth()->id())
+                    ->orderByLastMessage()
+                    ->get();
         return $groups;
+        // return GroupResource::collection($groups);
+        // dd($groups);
     }
 }

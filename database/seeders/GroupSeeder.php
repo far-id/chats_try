@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Group\Group;
+use App\Models\Group;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,8 +27,8 @@ class GroupSeeder extends Seeder
                 'description' => 'Forum untuk React Devloper Indonesia'
             ],
         ])->each(function($group) {
-            $gr = Group::create($group);
-            $gr->id == 1 ? $gr->users()->attach([1, 2, 3]) : $gr->users()->attach([1,4,5.6,7]);
+            Group::create($group);
+            // $gr->id == 1 ? $gr->users()->attach([1, 2, 3]) : $gr->users()->attach([1,4,5.6,7]);
         });
     }
 }

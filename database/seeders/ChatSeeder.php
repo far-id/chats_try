@@ -108,14 +108,14 @@ class ChatSeeder extends Seeder
                     'user_1' => $chat['user_1'],
                     'user_2' => $chat['user_2'],
                 ]);
-                $ch->messages()->create([
-                    'sender_id' => 1,
-                    'message' => 'Hello!',
-                ]);
-                $ch->messages()->create([
-                    'sender_id' => 2,
-                    'message' => 'Hi!',
-                ]);
+                // $ch->messages()->create([
+                //     'sender_id' => 1,
+                //     'message' => 'Hello!',
+                // ]);
+                // $ch->messages()->create([
+                //     'sender_id' => 2,
+                //     'message' => 'Hi!',
+                // ]);
         });
     }
 }

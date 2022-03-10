@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Chat;
-use App\Models\Group\Group;
 use App\Models\User;
-use App\Models\Message;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 

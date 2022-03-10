@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Models\Group;
+namespace App\Models;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,21 +20,22 @@ class Group extends Model
 
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->morphMany(Message::class, 'messageable');
     }
 
-    public function latest_message()
+    public function last_message()
     {
-        return $this->hasOne(MessageOfGroup::class)->latestOfMany();
+        return $this->morphOne(Message::class, 'messageable')->latestOfMany();
     }
-
     public function scopeOrderByLastMessage($q)
     {
         return $q->orderBy(
-            MessageOfGroup::select('created_at')
-            ->whereColumn('group_id', 'groups.id')
+            Message::select('created_at')
+            ->whereColumn('messages.messageable_id', 'groups.id')
+            ->where('messages.messageable_type', 'App\Models\Group')
             ->latest()
-            ->take(1)
-        , 'desc');
+                ->take(1),
+            'desc'
+        );
     }
 }

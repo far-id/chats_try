@@ -13,9 +13,9 @@ class Message extends Model
     protected $guarded = ['id'];
     protected $appends = ['sent_at', 'sent_at_raw'];
 
-    public function chat()
+    public function messageable()
     {
-        return $this->belongsTo(Chat::class);
+        return $this->morphTo();
     }
 
     public function sender()
