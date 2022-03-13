@@ -1,7 +1,8 @@
 import Avatar from '@/Components/Avatar';
 import { Link, usePage } from '@inertiajs/inertia-react';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
+import { Inertia } from '@inertiajs/inertia';
 
 const me = (user, auth) => {
     if (user.user_1 == auth.user.id) {
@@ -109,6 +110,11 @@ function Tabs({ auth }) {
         chats,
         groups,
     });
+
+    useEffect(() => {
+        console.log(auth)
+        // Inertia.reload()
+    }, [auth])
     return (
         <div className="w-full max-w-md px-4` sm:px-0">
             <Tab.Group>

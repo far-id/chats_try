@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export default function Show({ partner, messages }) {
     const { auth } = usePage().props;
-    const scrollRef = useRef(null);
+    const messagesEndRef = useRef(null);
     const [ typing, setTyping ] = useState(false)
     const { data, setData, reset } = useForm({
         message: ''
@@ -32,7 +32,7 @@ export default function Show({ partner, messages }) {
     }
 
     // listen if have the new message
-    Echo.private(`chats.${auth.user.uuid}`)
+    Echo.private(`chats.${auth.user.uuid}.${partner.uuid}`)
         .listenForWhisper(`isTyping${partner.uuid}`, (e) => {
             setTyping(true);
             clearTimeout(window.timeOut);
@@ -59,16 +59,16 @@ export default function Show({ partner, messages }) {
     }
 
     const scrollToBottom = () => {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
 
     const onTyping = () => {
-        Echo.private(`chats.${partner.uuid}`)
+        Echo.private(`chats.${partner.uuid}.${auth.user.uuid}`)
             .whisper(`isTyping${auth.user.uuid}`, {user:auth.user.name})
     };
 
     useEffect(() => {
-        scrollToBottom();
+        // scrollToBottom();
     }, [])
     return (
         <div>
@@ -91,7 +91,7 @@ export default function Show({ partner, messages }) {
                             </div>
                         </div>
                     ))}
-                    <dir ref={scrollRef} className="invisible"></dir>
+                    <dir ref={messagesEndRef} className="invisible"></dir>
                 </div>
                 <div className="border-t-2 flex items-center py-2 gap-x-3 px-5 bg-[#202c33]">
                     <span data-testid="smiley" data-icon="smiley">

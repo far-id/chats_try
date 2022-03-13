@@ -48,7 +48,7 @@ class ChatController extends Controller
             'sender_id' => auth()->id(),
         ]);
 
-        broadcast(new MessageSent($message, $user->uuid));
+        broadcast(new MessageSent($message, $user->uuid, auth()->user()->uuid));
         return back();
     }
 
