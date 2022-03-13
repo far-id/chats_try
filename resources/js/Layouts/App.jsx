@@ -4,13 +4,26 @@ import React, { Fragment, useState } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
 
 const me = (user, auth) => {
-    console.log('user', user);
+    // console.log('user', user);
     if (user.user_1 == auth.user.id) {
         return user.user_two;
     } else if (user.user_2 == auth.user.id) {
         return user.user_one;
     }
 };
+
+const myGroup = () => {
+    
+}
+
+const chatOrGroup = (idx, chat, auth) => {
+    idx == 0 ? me(chat, auth).username : chat.name;
+    if (idx == 0) {
+        return ['chats.show', me(chat, auth).username, me(chat, auth).name];
+    }else{
+        return ['groups.show', chat.slug, chat.name];
+    }
+}
 
 function Dropdown() {
     return (
@@ -68,25 +81,8 @@ function Tabs({ auth }) {
     let [tabsLabel] = useState({
         chats,
         groups,
-        // Recent: [
-        //     {
-        //         id: 1,
-        //         title: 'Does drinking coffee make you smarter?',
-        //         date: '5h ago',
-        //         commentCount: 5,
-        //         shareCount: 2, 
-        //     },
-        //     {
-        //         id: 2,
-        //         title: "So you've bought coffee... now what?",
-        //         date: '2h ago',
-        //         commentCount: 3,
-        //         shareCount: 2,
-        //     },
-        // ]
     });
-
-
+    console.log(groups);
     return (
         <div className="w-full max-w-md px-4` sm:px-0">
             <Tab.Group>
@@ -117,14 +113,17 @@ function Tabs({ auth }) {
                                 'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60'
                             )}
                         >
-                                {chats.map((chat) => (
+                                {chats.map((chat) => {
+                                    let cog= chatOrGroup(idx, chat, auth);
+                                    return (
                                         <div key={chat.id} className="p-2 bg-white border-b hover:bg-gray-200">
-                                            <Link href={route('chats.show', me(chat, auth).username)}>
-                                                <span className={` ${route().current('chats.show', me(chat, auth).username) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{me(chat, auth).name}</span>
-                                                <span className={`block ${route().current('chats.show', me(chat, auth).username) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.latest_message ? chat.latest_message.message.length > 35 ? chat.latest_message.message.substring(0, 35) + '...' : chat.latest_message.message : 'Start chat'}</span>
+                                            <Link href={route(cog[0], cog[1])}>
+                                                <span className={` ${route().current(cog[0], cog[1]) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{cog[2]}</span>
+                                                <span className={`block ${route().current(cog[0], cog[1]) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.latest_message ? chat.latest_message.message.length > 35 ? chat.latest_message.message.substring(0, 35) + '...' : chat.latest_message.message : 'Start chat'}</span>
                                             </Link>
                                         </div>
-                                ))}
+                                    )
+                                })}
                         </Tab.Panel>
                     ))}
                 </Tab.Panels>

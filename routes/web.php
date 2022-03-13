@@ -2,6 +2,7 @@
 
 use App\Events\MessageSent;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\TestController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Broadcast;
@@ -37,6 +38,11 @@ Route::controller(ChatController::class)->middleware('auth')->group(function () 
     Route::get('chats/{user:username}', 'show')->name('chats.show');
     Route::post('chats/{user:username}', 'send')->name('chats.send');
     Route::post('chats/{user:username}/new', 'new')->name('chats.new');
+});
+Route::controller(GroupController::class)->middleware('auth')->group(function () {
+    Route::get('group/{group:slug}', 'show')->name('groups.show');
+    Route::post('group/{group:slug}', 'send')->name('groups.send');
+    // Route::post('chats/{user:username}/new', 'new')->name('chats.new');
 });
 
 Route::get('/whatsapp', function() {
