@@ -37,12 +37,15 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'required|string',
-            'chat_id' => 'required|integer',
         ]);
-        $message = Message::create([
+
+        $chat = Chat::where('user_1', auth()->id())->where('user_2', $user->id)
+                    ->orWhere('user_2', auth()->id())->where('user_1', $user->id)
+                    ->first();
+
+        $message = $chat->messages()->create([
             'message' => $request->message,
             'sender_id' => auth()->id(),
-            'chat_id' => $request->chat_id
         ]);
 
         broadcast(new MessageSent($message, $user->uuid));

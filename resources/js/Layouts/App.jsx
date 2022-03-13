@@ -4,7 +4,6 @@ import React, { Fragment, useState } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
 
 const me = (user, auth) => {
-    // console.log('user', user);
     if (user.user_1 == auth.user.id) {
         return user.user_two;
     } else if (user.user_2 == auth.user.id) {
@@ -12,9 +11,35 @@ const me = (user, auth) => {
     }
 };
 
-const myGroup = () => {
-    
+const lastChatAt = (sent_at) => {
+    const now = Math.round(new Date().getTime() / 1000)
+    const diff = Math.floor((now - sent_at));
+    console.log(diff);
+    if (diff < 60) {
+        return `${diff} seconds ago`;
+    } else if (diff < 3600) {
+        return `${Math.floor(diff / 60)} minutes ago`;
+    } else if (diff < 86400) {
+        return `${Math.floor(diff / 3600)} hours ago`;
+    } else {
+        return `${Math.floor(diff / 86400)} days ago`;
+    }
 }
+
+// const lastChatAt = (rawTime) => {
+//     const now = Math.round(new Date().getTime() / 1000)
+//     const diff = now - rawTime;
+//     const diffMinutes = Math.round(diff / 1000 / 60);
+//     if (diffMinutes < 60) {
+//         return `${diffMinutes} minutes ago`;
+//     }
+//     const diffHours = Math.round(diff / 1000 / 60 / 60);
+//     if (diffHours < 24) {
+//         return `${diffHours} hours ago`;
+//     }
+//     const diffDays = Math.round(diff / 1000 / 60 / 60 / 24);
+//     return `${diffDays} days ago`;
+// };
 
 const chatOrGroup = (idx, chat, auth) => {
     idx == 0 ? me(chat, auth).username : chat.name;
@@ -82,7 +107,6 @@ function Tabs({ auth }) {
         chats,
         groups,
     });
-    console.log(groups);
     return (
         <div className="w-full max-w-md px-4` sm:px-0">
             <Tab.Group>
@@ -113,17 +137,22 @@ function Tabs({ auth }) {
                                 'focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60'
                             )}
                         >
-                                {chats.map((chat) => {
+                                {chats.length > 0 ? chats.map((chat) => {
                                     let cog= chatOrGroup(idx, chat, auth);
                                     return (
                                         <div key={chat.id} className="p-2 bg-white border-b hover:bg-gray-200">
                                             <Link href={route(cog[0], cog[1])}>
                                                 <span className={` ${route().current(cog[0], cog[1]) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{cog[2]}</span>
-                                                <span className={`block ${route().current(cog[0], cog[1]) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.latest_message ? chat.latest_message.message.length > 35 ? chat.latest_message.message.substring(0, 35) + '...' : chat.latest_message.message : 'Start chat'}</span>
+                                                <span className={`block ${route().current(cog[0], cog[1]) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.last_message ? chat.last_message.message.length > 28 ? chat.last_message.message.substring(0, 28) + '...' : chat.last_message.message : 'Start chat'}</span>
+                                                <span>{chat.last_message && lastChatAt(chat.last_message.sent_at_raw)}</span>
                                             </Link>
                                         </div>
                                     )
-                                })}
+                                })
+                                : <div className="bg-white hover:bg-gray-200">
+                                    <span className="text-gray-500">No chat</span>
+                                    </div>
+                                }
                         </Tab.Panel>
                     ))}
                 </Tab.Panels>
@@ -160,8 +189,8 @@ export default function App(props) {
                         
                         {showNewChat ? 
                             <>
-                                <div className="grid">
-                                    <h3 className="text-xl font-semibold text-black justify-self-center font">New Chats</h3>
+                                <div className="grid py-2">
+                                    <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-white via-sky-100 to-white justify-self-center">New Chats</h3>
                                 </div>
                                 {
                                     auth.users ? auth.users.map(user => (
@@ -178,20 +207,6 @@ export default function App(props) {
                             </>
                         :
                             <Tabs auth={auth} />
-                            // <>
-                            //     {
-                            //         auth.groups ? auth.groups.map(group => (
-                            //             <div key={group.id} className="p-2 bg-white border-b hover:bg-gray-200">
-                            //                 <Link href={route('chats.new', user.username)} method="POST" as="button"
-                            //                     className={`block text-left w-full focus:outline-none ${route().current('chats.show', user.username) ? 'text-blcak font-semibold' : 'text-gray-600'}`} >
-                            //                     {user.name}
-                            //                     <span className='block'>{user.email}</span>
-                            //                 </Link>
-                            //             </div>
-                            //         ))
-                            //         : ''
-                            //     }
-                            // </>
                         }
                     </div>
                 </div>
