@@ -11,35 +11,37 @@ const me = (user, auth) => {
     }
 };
 
-const lastChatAt = (sent_at) => {
-    const now = Math.round(new Date().getTime() / 1000)
-    const diff = Math.floor((now - sent_at));
-    console.log(diff);
-    if (diff < 60) {
-        return `${diff} seconds ago`;
-    } else if (diff < 3600) {
-        return `${Math.floor(diff / 60)} minutes ago`;
-    } else if (diff < 86400) {
-        return `${Math.floor(diff / 3600)} hours ago`;
-    } else {
-        return `${Math.floor(diff / 86400)} days ago`;
-    }
-}
-
-// const lastChatAt = (rawTime) => {
+// const lastChatAt = (sent_at) => {
 //     const now = Math.round(new Date().getTime() / 1000)
-//     const diff = now - rawTime;
-//     const diffMinutes = Math.round(diff / 1000 / 60);
-//     if (diffMinutes < 60) {
-//         return `${diffMinutes} minutes ago`;
+//     const diff = Math.floor((now - sent_at));
+//     console.log(diff);
+//     if (diff < 60) {
+//         return `${diff} seconds ago`;
+//     } else if (diff < 3600) {
+//         return `${Math.floor(diff / 60)} minutes ago`;
+//     } else if (diff < 86400) {
+//         return `${Math.floor(diff / 3600)} hours ago`;
+//     } else {
+//         return `${Math.floor(diff / 86400)} days ago`;
 //     }
-//     const diffHours = Math.round(diff / 1000 / 60 / 60);
-//     if (diffHours < 24) {
-//         return `${diffHours} hours ago`;
-//     }
-//     const diffDays = Math.round(diff / 1000 / 60 / 60 / 24);
-//     return `${diffDays} days ago`;
-// };
+// }
+
+const lastChatAt = (sent_at_raw, sent_at) => {
+    const now = Math.round(new Date().getTime() / 1000)
+    const night = Math.round(new Date().setHours(0, 0, 0, 0) / 1000)
+    if (sent_at_raw > night) {
+        return sent_at;
+    }else if (sent_at_raw > night - 86400) {
+        return 'Yesterday';
+    }else {
+        let date = new Date(sent_at_raw * 1000)
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+        return `${day}/${month}/${year}`
+    }
+
+}
 
 const chatOrGroup = (idx, chat, auth) => {
     idx == 0 ? me(chat, auth).username : chat.name;
@@ -142,9 +144,11 @@ function Tabs({ auth }) {
                                     return (
                                         <div key={chat.id} className="p-2 bg-white border-b hover:bg-gray-200">
                                             <Link href={route(cog[0], cog[1])}>
-                                                <span className={` ${route().current(cog[0], cog[1]) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{cog[2]}</span>
+                                                <div className='flex items-start justify-between'>
+                                                    <span className={` ${route().current(cog[0], cog[1]) ? 'text-sky-700 font-semibold' : 'text-gray-900'}`}>{cog[2]}</span>
+                                                    <span className='text-xs text-gray-600' >{chat.last_message && lastChatAt(chat.last_message.sent_at_raw, chat.last_message.sent_at)}</span>
+                                                </div>
                                                 <span className={`block ${route().current(cog[0], cog[1]) ? 'text-black font-semibold' : 'text-gray-500'}`}>{chat.last_message ? chat.last_message.message.length > 28 ? chat.last_message.message.substring(0, 28) + '...' : chat.last_message.message : 'Start chat'}</span>
-                                                <span>{chat.last_message && lastChatAt(chat.last_message.sent_at_raw)}</span>
                                             </Link>
                                         </div>
                                     )
@@ -166,10 +170,11 @@ function Tabs({ auth }) {
 export default function App(props) {
     const [showNewChat, setShowNewChat] = useState(false)
     const { auth } = usePage().props;
+    
     return (
         <div className="flex min-h-screen">
-            <div className="w-1/4">
-                <div className="fixed flex flex-col w-1/4 h-full text-left border-r">
+            <div className="w-2/6">
+                <div className="fixed flex flex-col w-2/6 h-full text-left border-r">
                     <div className="bg-[#202c33] flex justify-between px-5 py-4">
                         <Avatar src={auth.user && auth.user.avatar}/>
                         <div className="flex items-center gap-x-3">
@@ -212,7 +217,7 @@ export default function App(props) {
                 </div>
             </div>
 
-            <div className="w-3/4">
+            <div className="w-4/6">
                 {props.children}
             </div>
         </div>

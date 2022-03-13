@@ -19,7 +19,6 @@ export default function Show({ partner, messages }) {
             method: 'POST',
             data: {
                 message: data.message,
-                chat_id: messages[0].id,
             },
             headers: {
                 'X-Socket-Id': window.Echo.socketId()
