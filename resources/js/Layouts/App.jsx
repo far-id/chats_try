@@ -2,7 +2,6 @@ import Avatar from '@/Components/Avatar';
 import { Link, usePage } from '@inertiajs/inertia-react';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
-import { Inertia } from '@inertiajs/inertia';
 
 const me = (user, auth) => {
     if (user.user_1 == auth.user.id) {
@@ -12,23 +11,7 @@ const me = (user, auth) => {
     }
 };
 
-// const lastChatAt = (sent_at) => {
-//     const now = Math.round(new Date().getTime() / 1000)
-//     const diff = Math.floor((now - sent_at));
-//     console.log(diff);
-//     if (diff < 60) {
-//         return `${diff} seconds ago`;
-//     } else if (diff < 3600) {
-//         return `${Math.floor(diff / 60)} minutes ago`;
-//     } else if (diff < 86400) {
-//         return `${Math.floor(diff / 3600)} hours ago`;
-//     } else {
-//         return `${Math.floor(diff / 86400)} days ago`;
-//     }
-// }
-
 const lastChatAt = (sent_at_raw, sent_at) => {
-    const now = Math.round(new Date().getTime() / 1000)
     const night = Math.round(new Date().setHours(0, 0, 0, 0) / 1000)
     if (sent_at_raw > night) {
         return sent_at;
@@ -110,11 +93,6 @@ function Tabs({ auth }) {
         chats,
         groups,
     });
-
-    useEffect(() => {
-        console.log(auth)
-        // Inertia.reload()
-    }, [auth])
     return (
         <div className="w-full max-w-md px-4` sm:px-0">
             <Tab.Group>
@@ -159,9 +137,10 @@ function Tabs({ auth }) {
                                         </div>
                                     )
                                 })
-                                : <div className="bg-white hover:bg-gray-200">
+                                : 
+                                <div className="flex justify-center bg-white ">
                                     <span className="text-gray-500">No chat</span>
-                                    </div>
+                                </div>
                                 }
                         </Tab.Panel>
                     ))}
@@ -174,9 +153,17 @@ function Tabs({ auth }) {
 
 
 export default function App(props) {
-    const [showNewChat, setShowNewChat] = useState(false)
+    const [showNewChat, setShowNewChat] = useState(false);
+    const [showNewGroup, setShowNewGroup] = useState(false);
+    const [participant, setParticipant] = useState([]);
     const { auth } = usePage().props;
+    const [users, setUsers] = useState(auth.users)
+
     
+    useEffect(() => {
+        users.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+
+    }, [participant])
     return (
         <div className="flex min-h-screen">
             <div className="w-2/6">
@@ -184,9 +171,8 @@ export default function App(props) {
                     <div className="bg-[#202c33] flex justify-between px-5 py-4">
                         <Avatar src={auth.user && auth.user.avatar}/>
                         <div className="flex items-center gap-x-3">
-                            
-                            {/* <NewChat users={users} /> */}
-                            <div onClick={() => showNewChat == true ? setShowNewChat(false) : setShowNewChat(true)} aria-disabled="false" role="button" tabIndex={0} className="text-gray-200" title="Chat baru" aria-label="Chat baru">
+                            <div aria-disabled="false" role="button" tabIndex={0} className="text-gray-200" title="New Chat" aria-label="New Chat"
+                                onClick={() => { showNewChat == true ? setShowNewChat(false) : setShowNewChat(true), setShowNewGroup(false), setUsers(auth.users), setParticipant([])}}>
                                 <span data-testid="chat" data-icon="chat">
                                     <svg viewBox="0 0 24 24" width={24} height={24}>
                                         <path fill="currentColor" d="M19.005 3.175H4.674C3.642 3.175 3 3.789 3 4.821V21.02l3.544-3.514h12.461c1.033 0 2.064-1.06 2.064-2.093V4.821c-.001-1.032-1.032-1.646-2.064-1.646zm-4.989 9.869H7.041V11.1h6.975v1.944zm3-4H7.041V7.1h9.975v1.944z" />
@@ -199,10 +185,71 @@ export default function App(props) {
                     <div className="flex-1 overflow-y-auto bg-gradient-to-r from-cyan-500 to-blue-500">
                         
                         {showNewChat ? 
+                            showNewGroup ?
                             <>
-                                <div className="grid py-2">
-                                    <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-white via-sky-100 to-white justify-self-center">New Chats</h3>
+                                    <div className="flex items-center py-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" aria-disabled="false" role="button" className="w-6 h-6 mr-2 text-white" viewBox="0 0 20 20" fill="currentColor"
+                                            onClick={() => {showNewGroup == true ? setShowNewGroup(false) : setShowNewGroup(true), setUsers(auth.users), setParticipant([])}} >
+                                            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                                        </svg>
+                                        <h3 className="text-xl font-semibold text-white">Add Participant</h3>
+                                    </div>
+                                    {
+                                        participant.length > 0 ? participant.map((part, id) => (
+                                            <div key={id} className="flex items-center py-2">
+                                                <div className="overflow-hidden rounded-full w-7 h-7">
+                                                    <img src={part.avatar} alt="avatar" className="object-cover w-full h-full" />
+                                                </div>
+                                                <div className="ml-3">
+                                                    <h3 className="text-xl font-semibold text-white">{part.name}</h3>
+                                                </div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                                    onClick={(e) => {setUsers(users => [...users, part]), setParticipant(participant.filter((i) => i !== part))}}
+                                                    className="w-4 h-4 ml-3 text-gray-200 hover:border hover:rounded-full hover:bg-white hover:text-gray-800 " viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        ))
+                                        :
+                                        <div>
+                                            Clik some users to add
+                                        </div>
+                                    }
+
+                                    {
+                                        users ? users.map(user => (
+                                            <div key={user.id} className="p-2 bg-white border-b hover:bg-gray-200"
+                                                onClick={() => {setParticipant(participant => [...participant, user]), setUsers(users.filter((i) => i !== user))}}>
+                                                <div className={`block text-left w-full focus:outline-none text-gray-600`} >
+                                                    {user.name}
+                                                    <span className='block'>{user.email}</span>
+                                                </div>
+                                            </div>
+                                        ))
+                                        : ''
+                                    }
+
+                                    {
+                                        participant.length > 0 && (
+                                            <div className='bottom-0'>
+                                                woy
+                                            </div>
+                                        )
+                                    }
+                            </>
+                            :
+                            <>
+                                <div className="flex items-center py-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" aria-disabled="false" role="button" className="w-6 h-6 mr-2 text-white" viewBox="0 0 20 20" fill="currentColor"
+                                        onClick={() => showNewChat == true ? setShowNewChat(false) : setShowNewChat(true)}>
+                                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                                    </svg>
+                                    <h3 className="text-xl font-semibold text-white">New Chats</h3>
                                 </div>
+                                <div className="px-2 py-4 text-xl bg-white border-b hover:bg-gray-200" onClick={() => setShowNewGroup(true)}>
+                                    New Group
+                                </div>
+                                <div className='py-3 bg-white border-b' />
                                 {
                                     auth.users ? auth.users.map(user => (
                                         <div key={user.id} className="p-2 bg-white border-b hover:bg-gray-200">

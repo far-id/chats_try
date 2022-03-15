@@ -47,6 +47,8 @@ export default function Show({ partner, messages }) {
                     setTyping(false)
                 }
             });
+            console.log("woy", chat);
+
         })
 
     const chatClass = (x, y, option = 'justify') => {
@@ -68,7 +70,7 @@ export default function Show({ partner, messages }) {
     };
 
     useEffect(() => {
-        // scrollToBottom();
+        scrollToBottom();
     }, [])
     return (
         <div>
