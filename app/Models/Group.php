@@ -13,7 +13,7 @@ class Group extends Model
         'name', 'slug', 'description', 'image',
     ];
 
-    public function users()
+    public function participants()
     {
         return $this->belongsToMany(User::class);
     }

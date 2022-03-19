@@ -44,8 +44,8 @@ class HandleInertiaRequests extends Middleware
                 'chats' =>  Chat::where('user_1', auth()->id())->orWhere('user_2', auth()->id())
                                 ->orderByLastMessage()
                                 ->get(),
-                'groups' => Group::with('last_message', 'users', 'messages')
-                                ->whereRelation('users', 'users.id', auth()->id())
+                'groups' => Group::with('last_message', 'messages')
+                                ->whereRelation('participants', 'users.id', auth()->id())
                                 ->orderByLastMessage()
                                 ->get()
             ]: '',

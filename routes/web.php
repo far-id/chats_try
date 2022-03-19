@@ -40,9 +40,9 @@ Route::controller(ChatController::class)->middleware('auth')->group(function () 
     Route::post('chats/{user:username}/new', 'new')->name('chats.new');
 });
 Route::controller(GroupController::class)->middleware('auth')->group(function () {
-    Route::get('group/{group:slug}', 'show')->name('groups.show');
-    Route::post('group/{group:slug}', 'send')->name('groups.send');
-    // Route::post('chats/{user:username}/new', 'new')->name('chats.new');
+    Route::post('groups/new', 'new')->name('groups.new');
+    Route::get('groups/{group:slug}', 'show')->name('groups.show');
+    Route::post('groups/{group:slug}', 'send')->name('groups.send');
 });
 
 Route::get('/whatsapp', function() {
