@@ -21,17 +21,17 @@
 
 Install project dengan buka terminal atau cmd dan jalankan command dibawah satu-persatu :
 
-```
-  git clone https://github.com/farid10243/chats_try.git
-  cd chats_try
-  composer Install
-  npm i
-```
+- `git clone https://github.com/farid10243/chats_try.git`
+- `cd chats_try`
+- `composer install`
+- `npm install`
 
     
 ## Environment Variables
 
 Sebelum menjalankan aplikasi copy file `.env.example` dan ubah namanya menjadi `.env`.
+
+Jalankan perintah `php artisan key:generate`
 
 Buat database baru. Disini dicontohkan dengan mysql dengan nama database 'chats'
 dan konfigurasinya seperti :
@@ -67,6 +67,8 @@ PUSHER_APP_CLUSTER=
 ## Running
 
 Untuk menjalankan aplikasinya, jalankan 2 perintah bersamaan :
+- `php artisan serve`
+- `npm run dev`
 
 ```
   php artisan serve
