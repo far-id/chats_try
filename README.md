@@ -53,7 +53,7 @@ Sebelum mengatur konfigurasi pusher di file `.env`, kamu diminta untuk melakukan
 - Back end pilih `Laravel`
 - Klik `Create app`
 
-Setelah itu kau akan dipindahkan ke halaman baru. perhatikan di bagian kiri dan pilih menu `App keys`. kemudian kamu akan melihat uniq keys dan masukkan sesuai namanya di file .env
+Setelah itu kau akan dipindahkan ke halaman baru. perhatikan di bagian kiri dan pilih menu `App keys`. kemudian kamu akan melihat uniq keys dan masukkan sesuai namanya di file `.env`
 
 `BROADCAST_DRIVER=pusher`
 ```
