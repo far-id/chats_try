@@ -45,7 +45,7 @@ DB_PASSWORD=
 ```
 
 Sebelum mengatur konfigurasi pusher di .env file, kamu diminta untuk melakukan lnagkah-langkah berikut :
-- Membuat akun di [pusher.com](pusher.com)
+- Membuat akun di [pusher.com](https://pusher.com/)
 - Klik `Get Started` di bagian chanels
 - Namai aplikasi sesukamu
 - Dibagian cluster pilih `(Singapore)` atau region terdekat dari tempatmu
