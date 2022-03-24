@@ -70,11 +70,6 @@ Untuk menjalankan aplikasinya, jalankan 2 perintah bersamaan :
 - `php artisan serve`
 - `npm run dev`
 
-```
-  php artisan serve
-  npm run hot
-```
-
 
 ## Security Vulnerabilities
 
