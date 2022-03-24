@@ -44,7 +44,7 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Sebelum mengatur konfigurasi pusher di .env file, kamu diminta untuk melakukan lnagkah-langkah berikut :
+Sebelum mengatur konfigurasi pusher di file `.env`, kamu diminta untuk melakukan lnagkah-langkah berikut :
 - Membuat akun di [pusher.com](https://pusher.com/)
 - Klik `Get Started` di bagian chanels
 - Namai aplikasi sesukamu
