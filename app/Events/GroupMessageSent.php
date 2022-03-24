@@ -21,13 +21,13 @@ class GroupMessageSent implements ShouldBroadcast
      */
 
     public $message;
-    public $group_id;
-    public $sender_id;
-    public function __construct($message, $group_id, $sender_id)
+    public $group_slug;
+    public $sender_uuid;
+    public function __construct($message, $group_slug, $sender_uuid)
     {
         $this->message = $message;
-        $this->group_id = $group_id;
-        $this->sender_id = $sender_id;
+        $this->group_slug = $group_slug;
+        $this->sender_uuid = $sender_uuid;
         $this->dontBroadcastToCurrentUser();
 
     }
@@ -39,6 +39,6 @@ class GroupMessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PrivateChannel('chats.group.'. $this->group_slug);
     }
 }

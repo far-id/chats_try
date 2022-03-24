@@ -32,24 +32,23 @@ export default function Group({ group }) {
     };
 
     // listen if have the new message
-    // Echo.private(`chats.${auth.user.uuid}.${partner.uuid}`)
-    //     .listenForWhisper(`isTyping${partner.uuid}`, (e) => {
-    //         setTyping(true);
-    //         clearTimeout(window.timeOut);
-    //         window.timeOut = setTimeout(() => {
-    //             setTyping(false);
-    //         }, 3000);
-    //     })
-    //     .listen('MessageSent', ({ chat }) => {
-    //         Inertia.reload({
-    //             onSuccess: () => {
-    //                 scrollToBottom(),
-    //                     setTyping(false);
-    //             }
-    //         });
-    //         console.log("woy", chat);
+    Echo.private(`chats.group.${group.slug}`)
+        // .listenForWhisper(`isTyping${partner.uuid}`, (e) => {
+        //     setTyping(true);
+        //     clearTimeout(window.timeOut);
+        //     window.timeOut = setTimeout(() => {
+        //         setTyping(false);
+        //     }, 3000);
+        // })
+        .listen('GroupMessageSent', ({ chat }) => {
+            Inertia.reload({
+                onSuccess: () => {
+                    scrollToBottom(),
+                        setTyping(false);
+                }
+            });
 
-    //     });
+        });
 
     const chatClass = (x, y, option = 'justify') => {
         if (option == 'justify') {

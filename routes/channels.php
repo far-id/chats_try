@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('chats.{uuid}', function ($user, $uuid) {
+Broadcast::channel('chats.{receiver_uuid}.{sender_uuid}', function ($user, $receiver_uuid, $sender_uuid) {
     // return (int) $user->uuid === (int) $uuid;
+    return Auth::check();
+});
+Broadcast::channel('chats.group.{slug}', function($user, $slug) {
     return Auth::check();
 });

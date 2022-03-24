@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GroupMessageSent;
 use App\Events\MessageSent;
 use App\Models\Group;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class GroupController extends Controller
             'sender_id' => auth()->id(),
         ]);
 
-        broadcast(new MessageSent($message, $group->uuid, auth()->user()->uuid));
+        broadcast(new GroupMessageSent($message, $group->slug, auth()->user()->uuid));
         return back();
     }
 }
