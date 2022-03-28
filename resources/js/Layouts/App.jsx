@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/inertia-react';
 import React, { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition, Tab } from '@headlessui/react';
 import { Inertia } from '@inertiajs/inertia';
+import GithubCorner from 'react-github-corner';
 
 const me = (user, auth) => {
     if (user.user_1 == auth.user.id) {
@@ -202,6 +203,13 @@ export default function App(props) {
     }, [participant]);
     return (
         <div className="flex min-h-screen">
+            <GithubCorner
+                href={"https://github.com/farid10243/chats_try"}
+                bannerColor="#70B7FD"
+                octoColor="#fff"
+                size={80}
+                direction="right" 
+            />
             <div className="w-2/6">
                 <div className="fixed flex flex-col w-2/6 h-full text-left border-r">
                     <div className="bg-[#202c33] flex justify-between px-5 py-4">
@@ -229,10 +237,10 @@ export default function App(props) {
                                             <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                                         </svg>
                                         <form onSubmit={newGroupHandler}>
-                                            <div className='bg-white mt-10 py-3 px-6'>
-                                                <div className="border-b border-sky-400 flex justify-between">
+                                            <div className='px-6 py-3 mt-10 bg-white'>
+                                                <div className="flex justify-between border-b border-sky-400">
                                                     <input name="name" id="name" maxLength={30} placeholder="Group Name" value={groupName} onChange={(e) => setGroupName(e.target.value)} onKeyUp={() => setGroupNameLength(30 - groupName.length)}
-                                                        className="border-gray-300 focus:outline-none rounded-md shadow-sm w-10/12" required />
+                                                        className="w-10/12 border-gray-300 rounded-md shadow-sm focus:outline-none" required />
                                                     <span>{groupNameLength}</span>
                                                 </div>
                                             </div>

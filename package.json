@@ -32,6 +32,7 @@
         "tailwindcss": "^3.0.18"
     },
     "dependencies": {
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4"
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+        "react-github-corner": "^2.5.0"
     }
 }
