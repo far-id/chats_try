@@ -21,17 +21,17 @@
 
 Install project dengan buka terminal atau cmd dan jalankan command dibawah satu-persatu :
 
-```
-  git clone https://github.com/farid10243/chats_try.git
-  cd chats_try
-  composer Install
-  npm i
-```
+- `git clone https://github.com/farid10243/chats_try.git`
+- `cd chats_try`
+- `composer install`
+- `npm install`
 
     
 ## Environment Variables
 
 Sebelum menjalankan aplikasi copy file `.env.example` dan ubah namanya menjadi `.env`.
+
+Jalankan perintah `php artisan key:generate`
 
 Buat database baru. Disini dicontohkan dengan mysql dengan nama database 'chats'
 dan konfigurasinya seperti :
@@ -44,8 +44,8 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Sebelum mengatur konfigurasi pusher di .env file, kamu diminta untuk melakukan lnagkah-langkah berikut :
-- Membuat akun di [pusher.com](pusher.com)
+Sebelum mengatur konfigurasi pusher di file `.env`, kamu diminta untuk melakukan lnagkah-langkah berikut :
+- Membuat akun di [pusher.com](https://pusher.com/)
 - Klik `Get Started` di bagian chanels
 - Namai aplikasi sesukamu
 - Dibagian cluster pilih `(Singapore)` atau region terdekat dari tempatmu
@@ -53,7 +53,7 @@ Sebelum mengatur konfigurasi pusher di .env file, kamu diminta untuk melakukan l
 - Back end pilih `Laravel`
 - Klik `Create app`
 
-Setelah itu kau akan dipindahkan ke halaman baru. perhatikan di bagian kiri dan pilih menu `App keys`. kemudian kamu akan melihat uniq keys dan masukkan sesuai namanya di file .env
+Setelah itu kau akan dipindahkan ke halaman baru. perhatikan di bagian kiri dan pilih menu `App keys`. kemudian kamu akan melihat uniq keys dan masukkan sesuai namanya di file `.env`
 
 `BROADCAST_DRIVER=pusher`
 ```
@@ -67,11 +67,8 @@ PUSHER_APP_CLUSTER=
 ## Running
 
 Untuk menjalankan aplikasinya, jalankan 2 perintah bersamaan :
-
-```
-  php artisan serve
-  npm run hot
-```
+- `php artisan serve`
+- `npm run dev`
 
 
 ## Security Vulnerabilities
